@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Customer Portal{% endblock %}
+{% block content %}
+<h1>Customer Portal</h1>
+<p class="ph-lede">Sam's self-service view — look up your policies by email.</p>
+
+<form class="ph-form" method="get" action="{{ url_for('web.portal') }}">
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" value="{{ email }}">
+  <button type="submit">Look up my policies</button>
+</form>
+
+{% if email and not customer %}
+<p class="ph-lede">No customer found for that email. Try sam.rivera@example.com from the seed data.</p>
+{% endif %}
+
+{% if customer %}
+<h2>Welcome, {{ customer.full_name }}</h2>
+{% if policies %}
+<table class="ph-table">
+  <thead><tr><th>Policy #</th><th>Product</th><th>Status</th><th>Premium</th></tr></thead>
+  <tbody>
+    {% for p in policies %}
+    <tr>
+      <td><a href="{{ url_for('web.policy_detail', policy_id=p.id) }}">{{ p.policy_number }}</a></td>
+      <td>{{ p.product_type|capitalize }}</td>
+      <td><span class="ph-badge status-{{ p.status }}">{{ p.status }}</span></td>
+      <td>${{ "%.2f"|format(p.premium) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No policies on file yet.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

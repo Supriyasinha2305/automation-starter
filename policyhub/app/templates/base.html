@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="{{ url_for('static', filename='vendor/jquery-1.8.3.min.js') }}"></script>
+  <title>{% block title %}PolicyHub{% endblock %} · Meridian Assurance</title>
+</head>
+<body>
+  <div class="ph-shell">
+    <header class="ph-header">
+      <a href="{{ url_for('web.home') }}" class="ph-brand">Meridian Assurance <span>PolicyHub</span></a>
+      <nav class="ph-nav">
+        {# aria-current marks the page you are on; link text and hrefs are unchanged (tests rely on them). #}
+        <a href="{{ url_for('web.quote_new') }}"{% if request.endpoint in ('web.quote_new', 'web.quote_detail') %} aria-current="page"{% endif %}>New Quote</a>
+        <a href="{{ url_for('web.policy_queue') }}"{% if request.endpoint in ('web.policy_queue', 'web.policy_detail', 'web.billing') %} aria-current="page"{% endif %}>Underwriter Queue</a>
+        <a href="{{ url_for('web.claim_new') }}"{% if request.endpoint in ('web.claim_new', 'web.claim_status') %} aria-current="page"{% endif %}>File a Claim</a>
+        <a href="{{ url_for('web.portal') }}"{% if request.endpoint == 'web.portal' %} aria-current="page"{% endif %}>Customer Portal</a>
+      </nav>
+    </header>
+    <main class="ph-main">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="ph-footer">
+      Meridian Assurance PolicyHub — a training sandbox application for SQValex AI-Led QE certification. Not a real insurer.
+    </footer>
+  </div>
+</body>
+</html>

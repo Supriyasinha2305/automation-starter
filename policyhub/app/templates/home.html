@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Meridian Assurance PolicyHub</h1>
+<p class="ph-lede">A personal-lines insurance Policy Admin sandbox — quote, bind, endorse, renew, and file claims. Built as the practice target for the SQValex AI-Led QE training program.</p>
+
+<div class="ph-summary-row">
+  <div class="ph-tile"><span class="count">{{ quote_count }}</span><span>Quotes</span></div>
+  <div class="ph-tile"><span class="count">{{ policy_count }}</span><span>Policies</span></div>
+  <div class="ph-tile"><span class="count">{{ claim_count }}</span><span>Claims</span></div>
+</div>
+
+<a href="{{ url_for('web.quote_new') }}" class="ph-btn ph-cta-lowcontrast">Get a Quote</a>
+
+<h2>Personas</h2>
+<div class="ph-card">
+  <p><strong>Priya (Underwriter)</strong> — reviews and binds new business from the <a href="{{ url_for('web.policy_queue') }}">Underwriter Queue</a>.</p>
+  <p><strong>Alex (CSR)</strong> — handles endorsements, renewals, and billing from a Policy's detail page.</p>
+  <p><strong>Jordan (Claims Adjuster)</strong> — works claims from First Notice of Loss through closure.</p>
+  <p><strong>Sam (Policyholder)</strong> — self-service via the <a href="{{ url_for('web.portal') }}">Customer Portal</a>.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Billing — {{ policy.policy_number }}{% endblock %}
+{% block content %}
+<h1>Billing</h1>
+<p class="ph-lede">{{ policy.policy_number }} — {{ policy.customer.full_name }}</p>
+
+<table class="ph-table">
+  <thead><tr><th>Due date</th><th>Amount</th><th>Status</th><th>Paid</th></tr></thead>
+  <tbody>
+    {% for pay in payments %}
+    <tr>
+      <td>{{ pay.due_date }}</td>
+      <td>${{ "%.2f"|format(pay.amount) }}</td>
+      <td><span class="ph-badge status-{{ pay.status }}">{{ pay.status }}</span></td>
+      <td>{{ pay.paid_at.strftime('%Y-%m-%d') if pay.paid_at else '—' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Policy {{ policy.policy_number }}{% endblock %}
+{% block content %}
+<h1>{{ policy.policy_number }}</h1>
+<p class="ph-lede">{{ policy.customer.full_name }} · {{ policy.product_type|capitalize }} · <span class="ph-badge status-{{ policy.status }}">{{ policy.status }}</span></p>
+
+<div class="ph-card">
+  <table class="ph-table">
+    <tr><th>Premium</th><td>${{ "%.2f"|format(policy.premium) }}</td></tr>
+    <tr><th>Effective date</th><td>{{ policy.effective_date }}</td></tr>
+    <tr><th>Term end date</th><td>{{ policy.term_end_date }}</td></tr>
+    {% if policy.product_type == 'auto' %}
+    <tr><th>Driver age</th><td>{{ policy.driver_age if policy.driver_age is not none else "-" }}</td></tr>
+    <tr><th>Vehicle</th><td>{{ [policy.vehicle_year, policy.vehicle_make, policy.vehicle_model]|select|join(' ') or "-" }}</td></tr>
+    <tr><th>Usage</th><td>{{ (policy.usage_type or "personal")|capitalize }} · {{ policy.annual_mileage if policy.annual_mileage is not none else "-" }} mi/yr</td></tr>
+    <tr><th>Coverage</th><td>{{ (policy.coverage_type or "liability_only")|replace('_',' ')|capitalize }} · ${{ policy.deductible if policy.deductible is not none else "-" }} deductible</td></tr>
+    <tr><th>Anti-theft device</th><td>{{ "Yes" if policy.anti_theft_device else "No" }}</td></tr>
+    {% else %}
+    <tr><th>Home value</th><td>${{ "%.2f"|format(policy.home_value) if policy.home_value is not none else "-" }}</td></tr>
+    {% endif %}
+  </table>
+</div>
+
+<h2>Timeline</h2>
+<ul class="ph-timeline">
+  <li>Bound {{ policy.created_at.strftime('%Y-%m-%d') }}</li>
+  {% for e in policy.endorsements %}
+  <li>
+    Endorsement: {{ e.change_type.replace('_',' ') }} ({{ '+' if e.premium_delta >= 0 else '' }}${{ "%.2f"|format(e.premium_delta) }}) — {{ e.created_at.strftime('%Y-%m-%d') }}
+    {% if e.field_changes %}
+    <p class="ph-timeline-detail">
+      {% for field, change in e.field_changes.items() %}{{ field.replace('_',' ') }}: {{ change.old }} &rarr; {{ change.new }}{% if not loop.last %}; {% endif %}{% endfor %}
+    </p>
+    {% elif e.description %}
+    <p class="ph-timeline-detail">{{ e.description }}</p>
+    {% endif %}
+  </li>
+  {% endfor %}
+  {% for c in policy.claims %}
+  <li>Claim {{ c.claim_number }} filed ({{ (c.incident_type or "incident") }}) — {{ c.incident_date }}, now <span class="ph-badge status-{{ c.status }}">{{ c.status.replace('_',' ') }}</span></li>
+  {% endfor %}
+</ul>
+
+<div class="ph-summary-row">
+  <a href="{{ url_for('web.endorsement_new', policy_id=policy.id) }}" class="ph-btn secondary">Request Endorsement</a>
+  <a href="{{ url_for('web.claim_new', policy_id=policy.id) }}" class="ph-btn secondary">File a Claim</a>
+  <a href="{{ url_for('web.billing', policy_id=policy.id) }}" class="ph-btn secondary">Billing</a>
+</div>
+
+<div class="ph-summary-row">
+  {% if policy.status in ('active', 'endorsed') %}
+  <form method="post" action="{{ url_for('web.policy_renew', policy_id=policy.id) }}">
+    <button type="submit" class="ph-btn secondary">Renew</button>
+  </form>
+  <form method="post" action="{{ url_for('web.policy_cancel', policy_id=policy.id) }}">
+    <button type="submit" class="ph-btn secondary">Cancel</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

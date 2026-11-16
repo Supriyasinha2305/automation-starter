@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Underwriter Queue{% endblock %}
+{% block content %}
+<h1>Underwriter Queue</h1>
+<p class="ph-lede">All bound policies — Priya's view.</p>
+
+{% if policies %}
+<table class="ph-table">
+  <thead><tr><th>Policy #</th><th>Customer</th><th>Product</th><th>Premium</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for p in policies %}
+    <tr>
+      <td><a href="{{ url_for('web.policy_detail', policy_id=p.id) }}">{{ p.policy_number }}</a></td>
+      <td>{{ p.customer.full_name }}</td>
+      <td>{{ p.product_type|capitalize }}</td>
+      <td>${{ "%.2f"|format(p.premium) }}</td>
+      <td><span class="ph-badge status-{{ p.status }}">{{ p.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No policies yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}File a Claim{% endblock %}
+{% block content %}
+<h1>File a Claim (FNOL)</h1>
+<p class="ph-lede">First Notice of Loss — {{ 'for ' + policy.policy_number if policy else 'enter your policy number below' }}</p>
+
+<!-- Seeded accessibility issue (Week 12 lab target): explicit tabindex values
+     put keyboard focus out of visual reading order (amount before policy id,
+     description last instead of second) - deliberate, for the focus-order
+     check in the Accessibility module's scan and manual review. incident_type
+     below has no tabindex, so per the HTML spec it's visited after every
+     explicitly-numbered field (1-5), leaving the original scrambled order
+     between those five fields completely intact. -->
+<form class="ph-form" method="post" action="{{ url_for('web.claim_create') }}">
+  <label for="policy_id">Policy ID</label>
+  <input id="policy_id" name="policy_id" type="text" value="{{ policy.id if policy else '' }}" tabindex="3" required>
+
+  <label for="incident_type">What kind of incident?</label>
+  <select id="incident_type" name="incident_type">
+    {% for t in incident_types %}
+    <option value="{{ t }}">{{ t|capitalize }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="incident_date">Incident date</label>
+  <input id="incident_date" name="incident_date" type="date" tabindex="4" required>
+
+  <label for="estimated_amount">Estimated amount ($)</label>
+  <input id="estimated_amount" name="estimated_amount" type="number" step="0.01" tabindex="1">
+
+  <label for="description">What happened?</label>
+  <textarea id="description" name="description" rows="4" tabindex="2"></textarea>
+
+  <button type="submit" tabindex="5">Submit Claim</button>
+</form>
+{% endblock %}

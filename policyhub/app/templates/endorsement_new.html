@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Endorse {{ policy.policy_number }}{% endblock %}
+{% block content %}
+<h1>Request Endorsement (MTA)</h1>
+<p class="ph-lede">{{ policy.policy_number }} — {{ policy.customer.full_name }} · current premium ${{ "%.2f"|format(policy.premium) }}</p>
+
+<script>
+function phShowMtaFields(type) {
+  ['coverage-fields', 'vehicle-fields', 'usage-fields'].forEach(function (id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  var map = { coverage_change: 'coverage-fields', vehicle_update: 'vehicle-fields', usage_update: 'usage-fields' };
+  if (map[type]) document.getElementById(map[type]).style.display = 'block';
+  document.getElementById('manual-delta-row').style.display = map[type] ? 'none' : 'block';
+}
+</script>
+
+<form class="ph-form" method="post" action="{{ url_for('web.endorsement_create', policy_id=policy.id) }}">
+  <label for="change_type">Change type</label>
+  <select id="change_type" name="change_type" onchange="phShowMtaFields(this.value)">
+    <option value="coverage_change">Coverage / deductible change</option>
+    <option value="vehicle_update">Vehicle update</option>
+    <option value="usage_update">Usage / mileage update</option>
+    <option value="address_change">Address change</option>
+    <option value="driver_add">Add a driver</option>
+  </select>
+
+  <div id="coverage-fields">
+    <p class="ph-current-value">Current: {{ (policy.coverage_type or "liability_only")|replace('_',' ')|capitalize }}, ${{ policy.deductible or "-" }} deductible</p>
+    <div class="ph-form-row">
+      <div>
+        <label for="coverage_type">New coverage type</label>
+        <select id="coverage_type" name="coverage_type">
+          <option value="liability_only" {{ 'selected' if policy.coverage_type == 'liability_only' }}>Liability only</option>
+          <option value="collision" {{ 'selected' if policy.coverage_type == 'collision' }}>Collision</option>
+          <option value="comprehensive" {{ 'selected' if policy.coverage_type == 'comprehensive' }}>Comprehensive</option>
+        </select>
+      </div>
+      <div>
+        <label for="deductible">New deductible ($)</label>
+        <select id="deductible" name="deductible">
+          {% for d in (250, 500, 1000, 2500) %}
+          <option value="{{ d }}" {{ 'selected' if policy.deductible == d }}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="vehicle-fields" style="display:none">
+    <p class="ph-current-value">Current: {{ [policy.vehicle_year, policy.vehicle_make, policy.vehicle_model]|select|join(' ') or "-" }}</p>
+    <div class="ph-form-row">
+      <div>
+        <label for="vehicle_make">Make</label>
+        <input id="vehicle_make" name="vehicle_make" type="text" value="{{ policy.vehicle_make or '' }}">
+      </div>
+      <div>
+        <label for="vehicle_model">Model</label>
+        <input id="vehicle_model" name="vehicle_model" type="text" value="{{ policy.vehicle_model or '' }}">
+      </div>
+    </div>
+    <div class="ph-form-row">
+      <div>
+        <label for="vehicle_year">Year</label>
+        <input id="vehicle_year" name="vehicle_year" type="number" min="1980" max="2026" value="{{ policy.vehicle_year or '' }}">
+      </div>
+      <div>
+        <label for="vehicle_vin">VIN</label>
+        <input id="vehicle_vin" name="vehicle_vin" type="text" maxlength="17" value="{{ policy.vehicle_vin or '' }}">
+      </div>
+    </div>
+  </div>
+
+  <div id="usage-fields" style="display:none">
+    <p class="ph-current-value">Current: {{ (policy.usage_type or "personal")|capitalize }}, {{ policy.annual_mileage if policy.annual_mileage is not none else "-" }} mi/yr, anti-theft: {{ "Yes" if policy.anti_theft_device else "No" }}</p>
+    <div class="ph-form-row">
+      <div>
+        <label for="usage_type">Usage</label>
+        <select id="usage_type" name="usage_type">
+          <option value="personal" {{ 'selected' if policy.usage_type == 'personal' }}>Personal</option>
+          <option value="commercial" {{ 'selected' if policy.usage_type == 'commercial' }}>Commercial</option>
+          <option value="rideshare" {{ 'selected' if policy.usage_type == 'rideshare' }}>Rideshare</option>
+        </select>
+      </div>
+      <div>
+        <label for="annual_mileage">Annual mileage</label>
+        <input id="annual_mileage" name="annual_mileage" type="number" min="0" step="100" value="{{ policy.annual_mileage or '' }}">
+      </div>
+    </div>
+    <label for="anti_theft_device">Anti-theft device</label>
+    <select id="anti_theft_device" name="anti_theft_device">
+      <option value="yes" {{ 'selected' if policy.anti_theft_device }}>Yes</option>
+      <option value="no" {{ 'selected' if not policy.anti_theft_device }}>No</option>
+    </select>
+  </div>
+
+  <label for="description">Description / notes</label>
+  <textarea id="description" name="description" rows="3"></textarea>
+
+  <div id="manual-delta-row" style="display:none">
+    <label for="premium_delta">Premium change ($, can be negative)</label>
+    <input id="premium_delta" name="premium_delta" type="number" step="0.01" value="0">
+    <p class="ph-hint">Address changes and adding a driver aren't tied to a rated field yet, so enter the premium impact manually.</p>
+  </div>
+  <p class="ph-hint" id="auto-calc-hint">Coverage, vehicle, and usage changes recalculate the premium automatically from the new values above.</p>
+
+  <button type="submit">Submit Endorsement</button>
+</form>
+{% endblock %}

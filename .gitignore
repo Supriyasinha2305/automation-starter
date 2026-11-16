@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+report.html
+test-results/
+playwright-report/
+policyhub/*.db
+policyhub/*.db-journal
+policyhub/app/__pycache__/

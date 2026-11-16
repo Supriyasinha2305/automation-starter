@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Quote {{ quote.id[:8] }}{% endblock %}
+{% block content %}
+<h1>Quote for {{ quote.customer.full_name }}</h1>
+<p class="ph-lede">{{ quote.product_type|capitalize }} policy · status: <span class="ph-badge status-{{ quote.status }}">{{ quote.status }}</span></p>
+
+<div class="ph-card">
+  <table class="ph-table">
+    <tr><th>Product</th><td>{{ quote.product_type|capitalize }}</td></tr>
+    {% if quote.product_type == 'auto' %}
+    <tr><th>Driver age</th><td>{{ quote.driver_age }}</td></tr>
+    <tr><th>Vehicle</th><td>{{ [quote.vehicle_year, quote.vehicle_make, quote.vehicle_model]|select|join(' ') or "-" }}</td></tr>
+    {% if quote.vehicle_vin %}<tr><th>VIN</th><td>{{ quote.vehicle_vin }}</td></tr>{% endif %}
+    <tr><th>Garaging ZIP</th><td>{{ quote.garaging_zip or "-" }}</td></tr>
+    <tr><th>Usage</th><td>{{ (quote.usage_type or "personal")|capitalize }}</td></tr>
+    <tr><th>Annual mileage</th><td>{{ quote.annual_mileage if quote.annual_mileage is not none else "-" }}</td></tr>
+    <tr><th>Prior claims</th><td>{{ quote.prior_claims_count or 0 }}</td></tr>
+    <tr><th>Coverage</th><td>{{ (quote.coverage_type or "liability_only")|replace('_', ' ')|capitalize }}</td></tr>
+    <tr><th>Deductible</th><td>${{ quote.deductible if quote.deductible is not none else "-" }}</td></tr>
+    <tr><th>Anti-theft device</th><td>{{ "Yes" if quote.anti_theft_device else "No" }}</td></tr>
+    {% else %}
+    <tr><th>Home value</th><td>${{ "%.2f"|format(quote.home_value) }}</td></tr>
+    {% endif %}
+    <tr><th>Multi-policy discount</th><td>{{ "Yes" if quote.multi_policy else "No" }}</td></tr>
+    <tr><th>Annual premium</th><td><strong>${{ "%.2f"|format(quote.premium) }}</strong></td></tr>
+  </table>
+</div>
+
+{% if quote.status == 'quoted' %}
+<form method="post" action="{{ url_for('web.quote_bind', quote_id=quote.id) }}">
+  <button type="submit">Bind this Quote</button>
+</form>
+{% endif %}
+{% endblock %}

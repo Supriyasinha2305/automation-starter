@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}New Quote{% endblock %}
+{% block content %}
+<h1>New Quote</h1>
+<p class="ph-lede">Get a premium quote for an auto or home policy.</p>
+
+<form class="ph-form" method="post" action="{{ url_for('web.quote_create') }}">
+  <div class="ph-form-section">Customer</div>
+  <label for="customer_name">Full name</label>
+  <input id="customer_name" name="customer_name" type="text" required>
+
+  <label for="customer_email">Email</label>
+  <input id="customer_email" name="customer_email" type="email" required>
+
+  <div class="ph-form-section">Product</div>
+  <label for="product_type">Product</label>
+  <select id="product_type" name="product_type" onchange="document.getElementById('auto-fields').style.display = this.value==='auto' ? 'block' : 'none'; document.getElementById('home-fields').style.display = this.value==='home' ? 'block' : 'none';">
+    <option value="auto">Auto</option>
+    <option value="home">Home</option>
+  </select>
+
+  <div id="auto-fields">
+    <div class="ph-form-section">Driver</div>
+    <div class="ph-form-row">
+      <div>
+        <!-- Seeded accessibility issue (Week 12 lab target): this field has
+             no associated <label> and no aria-label, only a placeholder -
+             a screen reader announces it as an unlabeled textbox. Deliberate. -->
+        <input name="driver_age" type="number" placeholder="Driver age" min="16" max="99">
+      </div>
+      <div></div>
+    </div>
+
+    <div class="ph-form-section">Vehicle details</div>
+    <div class="ph-form-row">
+      <div>
+        <label for="vehicle_make">Make</label>
+        <input id="vehicle_make" name="vehicle_make" type="text" placeholder="e.g. Toyota">
+      </div>
+      <div>
+        <label for="vehicle_model">Model</label>
+        <input id="vehicle_model" name="vehicle_model" type="text" placeholder="e.g. Camry">
+      </div>
+    </div>
+    <div class="ph-form-row">
+      <div>
+        <label for="vehicle_year">Vehicle year</label>
+        <input id="vehicle_year" name="vehicle_year" type="number" min="1980" max="2026">
+      </div>
+      <div>
+        <label for="vehicle_vin">VIN <span class="ph-hint">(optional)</span></label>
+        <input id="vehicle_vin" name="vehicle_vin" type="text" maxlength="17" placeholder="17-character VIN">
+      </div>
+    </div>
+    <label for="garaging_zip">Garaging ZIP code</label>
+    <input id="garaging_zip" name="garaging_zip" type="text" maxlength="10" placeholder="e.g. 60601">
+
+    <div class="ph-form-section">Usage &amp; claims history</div>
+    <div class="ph-form-row">
+      <div>
+        <label for="usage_type">Vehicle usage</label>
+        <select id="usage_type" name="usage_type">
+          <option value="personal">Personal</option>
+          <option value="commercial">Commercial</option>
+          <option value="rideshare">Rideshare (e.g. Uber/Lyft)</option>
+        </select>
+      </div>
+      <div>
+        <label for="annual_mileage">Annual mileage</label>
+        <input id="annual_mileage" name="annual_mileage" type="number" min="0" step="100" placeholder="e.g. 12000">
+      </div>
+    </div>
+    <label for="prior_claims_count">Prior claims (last 5 years)</label>
+    <input id="prior_claims_count" name="prior_claims_count" type="number" min="0" max="20" value="0">
+
+    <div class="ph-form-section">Coverage &amp; discounts</div>
+    <div class="ph-form-row">
+      <div>
+        <label for="coverage_type">Coverage type</label>
+        <select id="coverage_type" name="coverage_type">
+          <option value="liability_only">Liability only</option>
+          <option value="collision">Collision</option>
+          <option value="comprehensive">Comprehensive</option>
+        </select>
+      </div>
+      <div>
+        <label for="deductible">Deductible ($)</label>
+        <select id="deductible" name="deductible">
+          <option value="250">250</option>
+          <option value="500">500</option>
+          <option value="1000" selected>1000</option>
+          <option value="2500">2500</option>
+        </select>
+      </div>
+    </div>
+    <label class="ph-checkbox">
+      <input type="checkbox" name="anti_theft_device"> Vehicle has an anti-theft device
+    </label>
+  </div>
+
+  <div id="home-fields" style="display:none">
+    <div class="ph-form-section">Home details</div>
+    <label for="home_value">Home value ($)</label>
+    <input id="home_value" name="home_value" type="number" min="0">
+  </div>
+
+  <div class="ph-form-section">Discounts</div>
+  <label class="ph-checkbox">
+    <input type="checkbox" name="multi_policy"> Bundle with another policy (multi-policy discount)
+  </label>
+
+  <button type="submit">Get Quote</button>
+</form>
+{% endblock %}
