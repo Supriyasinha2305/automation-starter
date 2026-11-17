@@ -40,6 +40,19 @@ class QuotePage:
             self.page.fill("#vehicle_model", vehicle_model)
         if coverage_type is not None:
             self.page.select_option("#coverage_type", coverage_type)
+            
+    def fill_home_quote(
+        self,
+        customer_name: str,
+        customer_email: str,
+        home_value: int,
+        ) -> None:
+        self.page.fill("#customer_name", customer_name)
+        self.page.fill("#customer_email", customer_email)
+        self.page.select_option("#product_type", "home")
+        # Deliberately not a role/test-id locator - the home_value input is
+        # the seeded accessibility bug (Week 12), it has no <label>.
+        self.page.fill("input[name='home_value']", str(home_value)),
 
     def submit(self) -> None:
         self.page.get_by_role("button", name="Get Quote").click()
