@@ -10,8 +10,8 @@ from pages.policy_page import HomePage
 from pages.quote_page import QuotePage
 
 
-def test_auto_quote_shows_a_premium(page):
-    quote = QuotePage(page, "http://127.0.0.1:6101")
+def test_auto_quote_shows_a_premium(page, base_url):
+    quote = QuotePage(page, base_url)
     quote.open_new()
 
     unique_email = f"sam.test.{int(time.time() * 1000)}@example.com"
