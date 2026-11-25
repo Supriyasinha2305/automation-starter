@@ -54,3 +54,48 @@ Fix the parameterized driver-age boundary test script and address errors in its 
 
 **Outcome:**
 Used the reviewed fixes to correct the boundary-value test and align it with the pytest and Playwright patterns in the project.
+
+
+## Entry 3: Fixing the Multi-Policy Discount Test
+
+**AI Tool:** GitHub Copilot using VS Code
+
+**Assistance requested:**
+Investigate why the multi-policy discount test failed and correct the test script.
+
+**AI-generated suggestion:**
+- Select the multi-policy checkbox by its `name` instead of using a generic checkbox selector.
+- Assert that the quote detail page reflects the selected discount and shows the corresponding premium.
+
+**Review and Changes Made:**
+- Reviewed the quote form and found that it has multiple checkboxes, including an auto-only anti-theft checkbox that is hidden for a home quote.
+- Updated the test to select `input[name='multi_policy']` specifically.
+- Updated assertions to verify the quote status, displayed multi-policy value, and premium.
+- Confirmed from the premium calculation that a $120,000 home value with the 10% multi-policy discount yields `$666.00`.
+- The browser test was not run during this assistance session.
+
+**Outcome:**
+Used the reviewed changes to make the test target the intended checkbox and verify the resulting discount.
+
+
+## Entry 4: Fixing the Premium-by-Deductible Test
+
+**AI Tool:** GitHub Copilot using VS Code
+
+**Assistance requested:**
+Explain why the deductible premium test was failing, then correct the script. The fix was later accidentally undone and requested again.
+
+**AI-generated suggestion:**
+- Set each deductible on the quote form before submitting.
+- Assert the premium displayed on the quote details page instead of querying form controls or a nonexistent `#discounted_premium` element after navigation.
+- Use expected premium strings that match the application’s currency formatting and rating calculation.
+
+**Review and Changes Made:**
+- Reviewed `QuotePage.fill_auto_quote` and confirmed it does not accept a `deductible` argument.
+- Reviewed the quote page flow and confirmed that submission navigates away from the form; the quote details template renders the premium as “Annual premium” and has no deductible dropdown or `#discounted_premium` element.
+- Used the current rating factors for age 30, collision coverage, and the selected deductible to set the expected values: `$1,050.00`, `$975.00`, `$900.00`, and `$800.00`.
+- Reapplied the fix after the original changes were undone.
+- Pylance reported no errors; the browser test was not run.
+
+**Outcome:**
+Updated the test to select the deductible before submission and verify the formatted premium on the quote details page.
