@@ -12,6 +12,8 @@ class QuotePage:
     def __init__(self, page: Page, base_url: str):
         self.page = page
         self.base_url = base_url
+        self.deductible_dropdown = page.locator("#deductible")
+        self.discounted_premium = page.locator("#discounted_premium")
 
     def open_new(self) -> None:
         self.page.goto(f"{self.base_url}/quote/new")
