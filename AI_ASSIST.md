@@ -4,43 +4,53 @@
 This file documents AI-assisted contributions to the Playwright automation project.
 All suggestions were reviewed and verified before being used.
 
-## Entry 1: Parameterized Driver Age Validation
+## Entry 1: Fixing the Driver Age Validation Test
 
-**AI assistance:** Used ChatGPT to help design a Pytest parameterized test for driver age boundary validation.
+**AI Tool:** GitHub Copilot using VS Code
 
-**Suggestion received:**
-- Use pytest.mark.parametrize to test multiple age values in one test function.
-- Cover boundary values 15, 16, 99 and 100.
-- Use meaningful test IDs for each scenario.
-
-**My review and verification:**
-- Reviewed the parameterization and verified that each age is passed to the form using str(age).
-- Checked that age 15 triggers the minimum age validation message.
-- Checked that age 100 triggers the maximum age validation message.
-- Verified that ages 16 and 99 do not trigger age validation errors.
-- Ran the test locally and reviewed the results.
-
-**Outcome:** Used the reviewed parameterized test in the automation suite.
-
-
-## Entry 2: Negative Driver Age Validation
-
-**AI Tool:** ChatGPT
-
-**Exact Prompt:**
-
-"Create a Playwright Python test for a page with Name, Email ID and Driver's Age. If the driver's age is less than 16, the error message should be 'Value must be greater than or equal to 16.'"
+**Assistance requested:**
+Fix the `test_auto_quote_driver_age_validation` script so that it correctly verifies browser-native HTML validation for the driver's age field.
 
 **AI-generated suggestion:**
-Use Playwright locators to fill in the customer details, enter an invalid driver age (15), submit the form and verify that the expected validation error is displayed.
+- Move the validation assertions inside the test function.
+- Locate the driver-age input by its `name` attribute.
+- Use the input element's `validity.rangeUnderflow` property.
+- Read the browser-generated `validationMessage`.
+- Correct the policy-count assertion in the same test file from an increase of zero to an increase of one.
 
 **Review and Changes Made:**
-- Reviewed the test flow for entering customer details and submitting the form.
-- Verified the actual validation message displayed by the application.
-- Replaced the initially suggested error message with the actual application message: "Value must be greater than or equal to 16."
-- Reviewed the locator used to identify the validation message.
-- Used a Python assertion to verify that the validation error is displayed.
-- Executed the test locally to check the validation behaviour.
+- Reviewed the existing test and confirmed that it was attempting to use the validation message outside the test function.
+- Confirmed that the policyhub form sets `min="16"` on the driver-age input.
+- Replaced the DOM text lookup with HTML constraint-validation checks.
+- Verified that age 15 produces `rangeUnderflow` and the message "Value must be greater than or equal to 16."
+- Reviewed the binding test and corrected the policy-count expectation to `policies_before + 1`.
 
-**Outcome:**ss
-Created a negative test scenario to verify that the application rejects a driver age below the minimum allowed age of 16.
+**Outcome:**
+Used the reviewed fixes to correct the driver-age validation test and the policy-count assertion.
+
+
+## Entry 2: Fixing the Driver Age Boundary Values Test
+
+**AI Tool:** GitHub Copilot using VS Code
+
+**Assistance requested:**
+Fix the parameterized driver-age boundary test script and address errors in its pytest parameters and fixture usage.
+
+**AI-generated suggestion:**
+- Import `Page` from `playwright.sync_api`.
+- Include `base_url` as a pytest fixture argument.
+- Use `driver_age` and `expected_error` in the test function signature.
+- Check `input.validity.valid` for the four boundary scenarios.
+- Verify the browser validation message for ages 15 and 100.
+- Verify the quote status for valid ages 16 and 99.
+
+**Review and Changes Made:**
+- Reviewed the parameterized test and identified mismatched parameter and fixture names.
+- Updated the test signature to match the `driver_age, expected_error` parameterization.
+- Added the required `base_url` fixture so `QuotePage` can open the quote form.
+- Replaced text-based validation lookups with constraint-validation properties.
+- Verified that ages 16 and 99 pass validation and navigate to a quoted quote.
+- Verified that ages 15 and 100 fail validation with their respective browser messages.
+
+**Outcome:**
+Used the reviewed fixes to correct the boundary-value test and align it with the pytest and Playwright patterns in the project.
