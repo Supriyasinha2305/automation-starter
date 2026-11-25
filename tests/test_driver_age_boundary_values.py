@@ -43,7 +43,6 @@ def test_driver_age_boundary_values(
         )
         assert age_input.evaluate("(input) => input.validationMessage") == expected_error
     else:
-        assert age_input.evaluate("(input) => input.validity.valid"), (
-            f"Age {driver_age} should pass HTML validation"
-        )
+        # Valid ages submit the form and navigate away from the quote form,
+        # so the age input no longer exists after submission.
         quote.expect_status("quoted")
