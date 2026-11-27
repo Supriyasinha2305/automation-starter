@@ -8,7 +8,7 @@ All suggestions were reviewed and verified before being used.
 
 **AI Tool:** GitHub Copilot using VS Code
 
-**Assistance requested:**
+**Prompt:**
 Fix the `test_auto_quote_driver_age_validation` script so that it correctly verifies browser-native HTML validation for the driver's age field.
 
 **AI-generated suggestion:**
@@ -28,12 +28,11 @@ Fix the `test_auto_quote_driver_age_validation` script so that it correctly veri
 **Outcome:**
 Used the reviewed fixes to correct the driver-age validation test and the policy-count assertion.
 
-
 ## Entry 2: Fixing the Driver Age Boundary Values Test
 
 **AI Tool:** GitHub Copilot using VS Code
 
-**Assistance requested:**
+**Prompt:**
 Fix the parameterized driver-age boundary test script and address errors in its pytest parameters and fixture usage.
 
 **AI-generated suggestion:**
@@ -55,12 +54,11 @@ Fix the parameterized driver-age boundary test script and address errors in its 
 **Outcome:**
 Used the reviewed fixes to correct the boundary-value test and align it with the pytest and Playwright patterns in the project.
 
-
 ## Entry 3: Fixing the Multi-Policy Discount Test
 
 **AI Tool:** GitHub Copilot using VS Code
 
-**Assistance requested:**
+**Prompt:**
 Investigate why the multi-policy discount test failed and correct the test script.
 
 **AI-generated suggestion:**
@@ -77,12 +75,11 @@ Investigate why the multi-policy discount test failed and correct the test scrip
 **Outcome:**
 Used the reviewed changes to make the test target the intended checkbox and verify the resulting discount.
 
-
 ## Entry 4: Fixing the Premium-by-Deductible Test
 
 **AI Tool:** GitHub Copilot using VS Code
 
-**Assistance requested:**
+**Prompt:**
 Explain why the deductible premium test was failing, then correct the script. The fix was later accidentally undone and requested again.
 
 **AI-generated suggestion:**
@@ -99,3 +96,5 @@ Explain why the deductible premium test was failing, then correct the script. Th
 
 **Outcome:**
 Updated the test to select the deductible before submission and verify the formatted premium on the quote details page.
+
+
